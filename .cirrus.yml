@@ -40,3 +40,6 @@ check_android_task:
       sleep 2
     screenrecord_artifacts:
       path: "*.h264"
+
+  env:
+    CC_TEST_REPORTER_ID: ENCRYPTED[b76fb170f6b743aef75ae160b3a0ea2185ec282ba082181c5150344b650dda45]
