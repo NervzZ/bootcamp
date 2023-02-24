@@ -4,6 +4,8 @@ container:
   memory: 16G
   kvm: true
 
+env:
+  CC_TEST_REPORTER_ID: ENCRYPTED[!3906061f7740193435edb463ea495038bf7ca66e766c9140ac83203a098093a8dc0c57fe08def52edc6b1d07a907fba3!]
 check_android_task:
   name: Run Android tests
   install_emulator_script:
@@ -38,7 +40,10 @@ check_android_task:
     for n in $(seq 1 20); do adb exec-out screenrecord --time-limit=180 --output-format=h264 - > $n.h264; done
   check_script:
     ./gradlew check connectedCheck
-
+  report_codeclimate_script: |
+    export JACOCO_SOURCE_PATH=app/src/main/java/
+    ./cc-test-reporter format-coverage ./app/build/reports/jacoco/jacocoTestReport/jacocoTestReport.xml --input-type jacoco
+    ./cc-test-reporter upload-coverage
   always:
     wait_for_screenrecord_script: |
       pkill -2 -x adb
@@ -46,5 +51,3 @@ check_android_task:
     screenrecord_artifacts:
       path: "*.h264"
 
-  env:
-    CC_TEST_REPORTER_ID: ENCRYPTED[b76fb170f6b743aef75ae160b3a0ea2185ec282ba082181c5150344b650dda45]
